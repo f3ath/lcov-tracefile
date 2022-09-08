@@ -1,0 +1,16 @@
+name: lcov_tracefile
+version: 0.0.1
+description: lcov tracefile model and parser
+repository: https://github.com/f3ath/lcov_tracefile
+environment:
+  sdk: '>=2.18.0 <3.0.0'
+
+dev_dependencies:
+  test: ^1.21.5
+  lints: ^2.0.0
+  check_coverage: ^0.0.4
+
+cider:
+  link_template:
+    tag: https://github.com/f3ath/lcov_tracefile/releases/tag/%tag%
+    diff: hhttps://github.com/f3ath/lcov_tracefile/compare/%from%...%to%
