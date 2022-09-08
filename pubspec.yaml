@@ -1,7 +1,7 @@
 name: lcov_tracefile
 version: 0.0.1
-description: lcov tracefile model and parser
-repository: https://github.com/f3ath/lcov_tracefile
+description: Dependence-free model and parser for lcov tracefiles. Parses the coverage data from lcov files line by line and produces the model.
+repository: https://github.com/f3ath/lcov-tracefile
 environment:
   sdk: '>=2.18.0 <3.0.0'
 
@@ -12,5 +12,5 @@ dev_dependencies:
 
 cider:
   link_template:
-    tag: https://github.com/f3ath/lcov_tracefile/releases/tag/%tag%
-    diff: hhttps://github.com/f3ath/lcov_tracefile/compare/%from%...%to%
+    tag: https://github.com/f3ath/lcov-tracefile/releases/tag/%tag%
+    diff: hhttps://github.com/f3ath/lcov-tracefile/compare/%from%...%to%
