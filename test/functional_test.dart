@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:lcov_tracefile/lcov_tracefile.dart';
+import 'package:lcov_tracefile/src/coverage.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
@@ -61,5 +62,34 @@ void main() {
     expect(sourceFile.branches.coverage.last.block, equals(0));
     expect(sourceFile.branches.coverage.last.branch, equals(0));
     expect(sourceFile.branches.coverage.last.taken, equals(1));
+  });
+
+  group('Percentage', () {
+    test('no data means no percentage', () {
+      final c = Coverage();
+      expect(c.percentage, isNull);
+    });
+
+    test('zero found means 100%', () {
+      final c = Coverage();
+      c.found = 0;
+      expect(c.percentage, equals(100));
+      c.hit = 0;
+      expect(c.percentage, equals(100));
+    });
+
+    test('1/3', () {
+      final c = Coverage();
+      c.found = 3;
+      c.hit = 1;
+      expect(c.percentage, equals(1/3));
+    });
+
+    test('null', () {
+      final c = Coverage();
+      c.found = -3;
+      c.hit = 1;
+      expect(c.percentage, isNull);
+    });
   });
 }
