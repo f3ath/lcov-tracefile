@@ -14,6 +14,7 @@ void main() {
 
   test('Parser throws on invalid input', () {
     expect(() => readTracefile(['FOO:bar']), throwsFormatException);
+    expect(() => readTracefile(['hello']), throwsFormatException);
   });
 
   test('Can parse the test name', () {
