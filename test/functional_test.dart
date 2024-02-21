@@ -12,22 +12,17 @@ void main() {
   });
 
   test('Parser throws on invalid input', () {
-    final tracefile = Tracefile();
-    expect(() {
-      Parser(tracefile).parseLines(['FOO:bar']);
-    }, throwsFormatException);
+    expect(() => readTracefile(['FOO:bar']), throwsFormatException);
   });
 
   test('Can parse the test name', () {
-    final tracefile = Tracefile();
-    Parser(tracefile).parseLines(['TN:my_test_name']);
+    final tracefile = readTracefile(['TN:my_test_name']);
     expect(tracefile.testName, equals('my_test_name'));
   });
 
   test('Can parse aggregated branch coverage', () {
-    final tracefile = Tracefile();
-    Parser(tracefile)
-        .parseLines(['SF:my_file', 'BRF:2', 'BRH:1', 'end_of_record']);
+    final tracefile =
+        readTracefile(['SF:my_file', 'BRF:2', 'BRH:1', 'end_of_record']);
     expect(tracefile.sources.first.branches.found, equals(2));
     expect(tracefile.sources.first.branches.hit, equals(1));
   });

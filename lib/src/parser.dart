@@ -6,57 +6,41 @@ import 'package:lcov_tracefile/src/source_file.dart';
 import 'package:lcov_tracefile/src/tracefile.dart';
 
 class Parser {
-  final Tracefile tracefile;
-
   Parser(this.tracefile);
 
-  /// Parses [lines] of a tracefile and updates the [tracefile] model
-  /// accordingly. This method must be called for each line of the tracefile
-  /// sequentially from the first to the last.
-  /// Throws a [FormatException] if the [line] can not be parsed.
-  parseLines(List<String> lines) => lines.forEach(parseLine);
+  final Tracefile tracefile;
 
   /// Parses a single [line] of a tracefile and updates the [tracefile]
   /// accordingly. This method must be called for each line of the tracefile
   /// sequentially from the first to the last.
   /// Throws a [FormatException] if the [line] can not be parsed.
   parseLine(String line) {
-    if (line == 'end_of_record') return null;
-    final parts = line.split(':');
-    if (parts.length != 2) throw FormatException('Can not parse "$line"');
-    getHandler(parts[0])(parts[1].split(','));
+    if (line != 'end_of_record') {
+      switch (line.split(':')) {
+        case [String type, String values]:
+          getHandler(type)(values.split(','));
+        default:
+          throw FormatException('Can not parse "$line"');
+      }
+    }
   }
 
   /// Routes the call to a specific method according to the [type].
-  Function(List<String>) getHandler(String type) {
-    switch (type) {
-      case 'LH':
-        return linesHit;
-      case 'LF':
-        return linesFound;
-      case 'DA':
-        return lineCoverage;
-      case 'BRH':
-        return branchesHit;
-      case 'BRF':
-        return branchesFound;
-      case 'BRDA':
-        return branchCoverage;
-      case 'FNH':
-        return functionsHit;
-      case 'FNF':
-        return functionsFound;
-      case 'FNDA':
-        return functionCoverage;
-      case 'FN':
-        return functionReference;
-      case 'SF':
-        return sourceFile;
-      case 'TN':
-        return testName;
-    }
-    throw FormatException('Invalid line type "$type"');
-  }
+  Function(List<String>) getHandler(String type) => switch (type) {
+        'LH' => linesHit,
+        'LF' => linesFound,
+        'DA' => lineCoverage,
+        'BRH' => branchesHit,
+        'BRF' => branchesFound,
+        'BRDA' => branchCoverage,
+        'FNH' => functionsHit,
+        'FNF' => functionsFound,
+        'FNDA' => functionCoverage,
+        'FN' => functionReference,
+        'SF' => sourceFile,
+        'TN' => testName,
+        _ => throw FormatException('Invalid line type "$type"')
+      };
 
   void testName(List<String> values) {
     tracefile.testName = values[0];
