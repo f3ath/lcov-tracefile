@@ -1,20 +1,19 @@
-import 'package:lcov_tracefile/src/branch_coverage.dart';
-import 'package:lcov_tracefile/src/function_coverage.dart';
-import 'package:lcov_tracefile/src/line_coverage.dart';
+import 'package:lcov_tracefile/lcov_tracefile.dart';
+import 'package:lcov_tracefile/src/coverage.dart';
 
 /// Coverage data for a source file.
 class SourceFile {
+  SourceFile(this.name);
+
   /// Source file name.
   final String name;
 
   /// Line coverage.
-  final lines = LineCoverage();
+  final lines = Coverage<LineExecution>();
 
   /// Function coverage.
   final functions = FunctionCoverage();
 
   /// Branch Coverage.
-  final branches = BranchCoverage();
-
-  SourceFile(this.name);
+  final branches = Coverage<BranchExecution>();
 }

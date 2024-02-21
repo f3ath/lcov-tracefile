@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:lcov_tracefile/lcov_tracefile.dart';
+import 'package:lcov_tracefile/src/coverage.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
@@ -12,22 +13,18 @@ void main() {
   });
 
   test('Parser throws on invalid input', () {
-    final tracefile = Tracefile();
-    expect(() {
-      Parser(tracefile).parseLines(['FOO:bar']);
-    }, throwsFormatException);
+    expect(() => readTracefile(['FOO:bar']), throwsFormatException);
+    expect(() => readTracefile(['hello']), throwsFormatException);
   });
 
   test('Can parse the test name', () {
-    final tracefile = Tracefile();
-    Parser(tracefile).parseLines(['TN:my_test_name']);
+    final tracefile = readTracefile(['TN:my_test_name']);
     expect(tracefile.testName, equals('my_test_name'));
   });
 
   test('Can parse aggregated branch coverage', () {
-    final tracefile = Tracefile();
-    Parser(tracefile)
-        .parseLines(['SF:my_file', 'BRF:2', 'BRH:1', 'end_of_record']);
+    final tracefile =
+        readTracefile(['SF:my_file', 'BRF:2', 'BRH:1', 'end_of_record']);
     expect(tracefile.sources.first.branches.found, equals(2));
     expect(tracefile.sources.first.branches.hit, equals(1));
   });
@@ -66,5 +63,34 @@ void main() {
     expect(sourceFile.branches.coverage.last.block, equals(0));
     expect(sourceFile.branches.coverage.last.branch, equals(0));
     expect(sourceFile.branches.coverage.last.taken, equals(1));
+  });
+
+  group('Percentage', () {
+    test('no data means no percentage', () {
+      final c = Coverage();
+      expect(c.percentage, isNull);
+    });
+
+    test('zero found means 100%', () {
+      final c = Coverage();
+      c.found = 0;
+      expect(c.percentage, equals(100));
+      c.hit = 0;
+      expect(c.percentage, equals(100));
+    });
+
+    test('1/3', () {
+      final c = Coverage();
+      c.found = 3;
+      c.hit = 1;
+      expect(c.percentage, equals(1 / 3));
+    });
+
+    test('null', () {
+      final c = Coverage();
+      c.found = -3;
+      c.hit = 1;
+      expect(c.percentage, isNull);
+    });
   });
 }
