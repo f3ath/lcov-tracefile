@@ -82,7 +82,7 @@ void main() {
       final c = Coverage();
       c.found = 3;
       c.hit = 1;
-      expect(c.percentage, equals(1/3));
+      expect(c.percentage, equals(1 / 3));
     });
 
     test('null', () {
